@@ -77,19 +77,8 @@ public class CentipedeSegment : MonoBehaviour
     private void UpdateBodySegment()
     {
         // Follow the segment ahead
-        Vector2 nextPosition = GridPosition(ahead.transform.position);
+        targetPosition = GridPosition(ahead.transform.position);
         direction = ahead.direction;
-
-        // Realign the segment to the grid
-        targetPosition = GridPosition(transform.position);
-
-        // Offset the target position by the direction to the next segment
-        // Follow horizontally first, then vertically
-        if (targetPosition.x != nextPosition.x) {
-            targetPosition.x = nextPosition.x;
-        } else if (targetPosition.y != nextPosition.y) {
-            targetPosition.y = nextPosition.y;
-        }
 
         // Update the next body segment
         if (behind != null) {
