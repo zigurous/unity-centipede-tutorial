@@ -3,8 +3,7 @@ using UnityEngine;
 
 public class Centipede : MonoBehaviour
 {
-    private List<CentipedeSegment> segments;
-    private float nextUpdate;
+    private List<CentipedeSegment> segments = new List<CentipedeSegment>();
 
     [Header("Prefabs")]
     public CentipedeSegment segmentPrefab;
@@ -17,16 +16,34 @@ public class Centipede : MonoBehaviour
     [Header("Movement")]
     public LayerMask collisionMask = ~0;
     public Collider2D homeArea;
-    public float speed = 16f;
+    public float speed = 1f;
     public int size = 12;
 
     [Header("Scoring")]
     public int pointsHead = 100;
     public int pointsBody = 10;
 
-    private void Awake()
+    public void Remove(CentipedeSegment segment)
     {
-        segments = new List<CentipedeSegment>();
+        int points = segment.isHead ? pointsHead : pointsBody;
+        GameManager.Instance.IncreaseScore(points);
+
+        segments.Remove(segment);
+
+        if (segment.ahead != null) {
+            segment.ahead.behind = null;
+        }
+
+        if (segment.behind != null) {
+            segment.behind.ahead = null;
+        }
+
+        Destroy(segment.gameObject);
+        Instantiate(mushroomPrefab, GridPosition(segment.transform.position), Quaternion.identity);
+
+        if (segments.Count == 0) {
+            GameManager.Instance.NextLevel();
+        }
     }
 
     public void Respawn()
@@ -39,57 +56,34 @@ public class Centipede : MonoBehaviour
 
         for (int i = 0; i < size; i++)
         {
-            CentipedeSegment segment = Instantiate(segmentPrefab, transform.position, Quaternion.identity);
+            Vector2 position = GridPosition(transform.position) + (Vector2.left * i);
+            CentipedeSegment segment = Instantiate(segmentPrefab, position, Quaternion.identity);
             segment.centipede = this;
             segments.Add(segment);
         }
 
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < segments.Count; i++)
         {
-            if (i > 0) {
-                segments[i].previous = segments[i - 1];
-            }
-
-            if (i < size - 1) {
-                segments[i].next = segments[i + 1];
-            }
+            CentipedeSegment segment = segments[i];
+            segment.ahead = GetSegmentAt(i-1);
+            segment.behind = GetSegmentAt(i+1);
         }
     }
 
-    private void Update()
+    private CentipedeSegment GetSegmentAt(int index)
     {
-        if (Time.time < nextUpdate) {
-            return;
+        if (index >= 0 && index < segments.Count) {
+            return segments[index];
+        } else {
+            return null;
         }
-
-        for (int i = segments.Count - 1; i >= 0; i--) {
-            segments[i].Move();
-        }
-
-        nextUpdate = Time.time + (1f / speed);
     }
 
-    public void Remove(CentipedeSegment segment)
+    private Vector2 GridPosition(Vector2 position)
     {
-        int points = segment.isHead ? pointsHead : pointsBody;
-        GameManager.Instance.IncreaseScore(points);
-
-        if (segment.previous != null) {
-            segment.previous.next = null;
-        }
-
-        if (segment.next != null) {
-            segment.next.previous = null;
-        }
-
-        segments.Remove(segment);
-
-        Instantiate(mushroomPrefab, segment.transform.position, Quaternion.identity);
-        Destroy(segment.gameObject);
-
-        if (segments.Count == 0) {
-            GameManager.Instance.NextLevel();
-        }
+        position.x = Mathf.Round(position.x);
+        position.y = Mathf.Round(position.y);
+        return position;
     }
 
 }

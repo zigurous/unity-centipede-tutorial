@@ -2,84 +2,125 @@ using UnityEngine;
 
 public class CentipedeSegment : MonoBehaviour
 {
-    public Centipede centipede { get; set; }
-    public CentipedeSegment next { get; set; }
-    public CentipedeSegment previous { get; set; }
-    public bool isHead => previous == null;
-
     private SpriteRenderer spriteRenderer;
-    private Vector2 direction = Vector2.one;
+
+    public Centipede centipede { get; set; }
+    public CentipedeSegment ahead { get; set; }
+    public CentipedeSegment behind { get; set; }
+    public bool isHead => ahead == null;
+
+    private Vector2 direction = Vector2.right + Vector2.down;
+    private Vector2 targetPosition;
 
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        targetPosition = transform.position;
     }
 
-    public void Move()
+    private void Update()
     {
-        if (isHead) {
-            MoveHead();
-        } else {
-            MoveBody();
+        // Set the next target position if the segment has reached its target
+        if (isHead && Vector2.Distance(transform.position, targetPosition) < 0.1f) {
+            UpdateHeadSegment();
         }
+
+        // Move towards the target position
+        Vector2 currentPosition = transform.position;
+        float speed = centipede.speed * Time.deltaTime;
+        transform.position = Vector2.MoveTowards(currentPosition, targetPosition, speed);
+
+        // Rotate the segment to face the direction it is moving
+        Vector2 movementDirection = (targetPosition - currentPosition).normalized;
+        float angle = Mathf.Atan2(movementDirection.y, movementDirection.x);
+        transform.rotation = Quaternion.AngleAxis(angle * Mathf.Rad2Deg, Vector3.forward);
+
+        // Set the corresponding sprite
+        spriteRenderer.sprite = isHead ? centipede.headSprite : centipede.bodySprite;
     }
 
-    private void MoveBody()
+    private void UpdateHeadSegment()
     {
-        direction = previous.direction;
-        transform.position = previous.transform.position;
-        transform.rotation = previous.transform.rotation;
-        spriteRenderer.sprite = centipede.bodySprite;
-    }
+        Vector2 gridPosition = GridPosition(transform.position);
 
-    private void MoveHead()
-    {
-        Vector3 position = GetPosition(direction.x, 0f);
-        Quaternion rotation = GetRotation(direction.x, 0f);
+        // Calculate the next grid position
+        targetPosition = gridPosition;
+        targetPosition.x += direction.x;
 
-        if (Physics2D.OverlapBox(position, Vector3.one * 0.5f, 0f, centipede.collisionMask))
+        // Check if the segment will collide with an object
+        if (Physics2D.OverlapBox(targetPosition, Vector2.one * 0.5f, 0f, centipede.collisionMask))
         {
+            // Reverse horizontal direction
             direction.x = -direction.x;
-            position = GetPosition(0f, direction.y);
+
+            // Advance to the next row
+            targetPosition.x = gridPosition.x;
+            targetPosition.y = gridPosition.y + direction.y;
 
             Bounds homeBounds = centipede.homeArea.bounds;
 
-            if ((direction.y == 1f && position.y > homeBounds.max.y) ||
-                (direction.y == -1f && position.y < homeBounds.min.y))
+            // Reverse vertical direction if the segment leaves the home area
+            if ((direction.y == 1f && targetPosition.y > homeBounds.max.y) ||
+                (direction.y == -1f && targetPosition.y < homeBounds.min.y))
             {
                 direction.y = -direction.y;
-                position = GetPosition(0f, direction.y);
+                targetPosition.y = gridPosition.y + direction.y;
             }
-
-            rotation = GetRotation(0f, direction.y);
         }
 
-        transform.position = position;
-        transform.rotation = rotation;
-        spriteRenderer.sprite = centipede.headSprite;
+        // Update the body segments
+        if (behind != null) {
+            behind.UpdateBodySegment();
+        }
     }
 
-    private Vector2 GetPosition(float directionX, float directionY)
+    private void UpdateBodySegment()
     {
-        Vector2 position = transform.position;
-        position.x += directionX;
-        position.y += directionY;
+        // Follow the segment ahead
+        Vector2 nextPosition = GridPosition(ahead.transform.position);
+        direction = ahead.direction;
+
+        // Realign the segment to the grid
+        targetPosition = GridPosition(transform.position);
+
+        // Offset the target position by the direction to the next segment
+        // Follow horizontally first, then vertically
+        if (targetPosition.x != nextPosition.x) {
+            targetPosition.x = nextPosition.x;
+        } else if (targetPosition.y != nextPosition.y) {
+            targetPosition.y = nextPosition.y;
+        }
+
+        // Update the next body segment
+        if (behind != null) {
+            behind.UpdateBodySegment();
+        }
+    }
+
+    private Vector2 GridPosition(Vector2 position)
+    {
+        position.x = Mathf.Round(position.x);
+        position.y = Mathf.Round(position.y);
         return position;
-    }
-
-    private Quaternion GetRotation(float directionX, float directionY)
-    {
-        float angle = Mathf.Atan2(directionY, directionX);
-        return Quaternion.AngleAxis(angle * Mathf.Rad2Deg, Vector3.forward);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Dart")) {
-            centipede.Remove(this);
-        } else if (collision.gameObject.layer == LayerMask.NameToLayer("Player")) {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Player")) {
             GameManager.Instance.ResetRound();
         }
+
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Dart") && collision.collider.enabled)
+        {
+            collision.collider.enabled = false;
+            centipede.Remove(this);
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(targetPosition, Vector3.one);
     }
 
 }
