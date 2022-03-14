@@ -37,4 +37,13 @@ public class MushroomField : MonoBehaviour
         }
     }
 
+    public void Heal()
+    {
+        Mushroom[] mushrooms = FindObjectsOfType<Mushroom>();
+
+        for (int i = 0; i < mushrooms.Length; i++) {
+            mushrooms[i].Heal();
+        }
+    }
+
 }

@@ -13,7 +13,7 @@ public class Mushroom : MonoBehaviour
         health = states.Length;
     }
 
-    private void Damage(int amount)
+    public void Damage(int amount)
     {
         health -= amount;
 
@@ -26,6 +26,12 @@ public class Mushroom : MonoBehaviour
             GameManager.Instance.IncreaseScore(points);
             Destroy(gameObject);
         }
+    }
+
+    public void Heal()
+    {
+        health = states.Length;
+        spriteRenderer.sprite = states[0];
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

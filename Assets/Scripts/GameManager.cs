@@ -75,8 +75,9 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        blaster.Respawn();
+        mushroomField.Heal();
         centipede.Respawn();
+        blaster.Respawn();
     }
 
     private void GameOver()
