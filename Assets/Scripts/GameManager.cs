@@ -61,6 +61,7 @@ public class GameManager : MonoBehaviour
 
         blaster.Respawn();
         centipede.Respawn();
+        mushroomField.Clear();
         mushroomField.Generate();
         gameOver.SetActive(false);
     }
@@ -95,11 +96,6 @@ public class GameManager : MonoBehaviour
     {
         centipede.speed *= 1.1f;
         centipede.Respawn();
-
-        mushroomField.amount = Mathf.CeilToInt(mushroomField.amount * 1.1f);
-        mushroomField.Generate();
-
-        blaster.Respawn();
     }
 
     private void SetScore(int value)

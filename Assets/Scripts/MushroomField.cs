@@ -13,8 +13,6 @@ public class MushroomField : MonoBehaviour
 
     public void Generate()
     {
-        Clear();
-
         Bounds bounds = area.bounds;
 
         for (int i = 0; i < amount; i++)
