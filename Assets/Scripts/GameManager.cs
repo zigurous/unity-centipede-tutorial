@@ -38,8 +38,6 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        Application.targetFrameRate = 60;
-
         blaster = FindObjectOfType<Blaster>();
         centipede = FindObjectOfType<Centipede>();
         mushroomField = FindObjectOfType<MushroomField>();
