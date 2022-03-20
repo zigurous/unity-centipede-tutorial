@@ -38,8 +38,8 @@ public class Centipede : MonoBehaviour
             segment.behind.ahead = null;
         }
 
-        Destroy(segment.gameObject);
         Instantiate(mushroomPrefab, GridPosition(segment.transform.position), Quaternion.identity);
+        Destroy(segment.gameObject);
 
         if (segments.Count == 0) {
             GameManager.Instance.NextLevel();
