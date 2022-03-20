@@ -47,7 +47,7 @@ public class CentipedeSegment : MonoBehaviour
         targetPosition.x += direction.x;
 
         // Check if the segment will collide with an object
-        if (Physics2D.OverlapBox(targetPosition, Vector2.one * 0.5f, 0f, centipede.collisionMask))
+        if (Physics2D.OverlapBox(targetPosition, Vector2.zero, 0f, centipede.collisionMask))
         {
             // Reverse horizontal direction
             direction.x = -direction.x;
