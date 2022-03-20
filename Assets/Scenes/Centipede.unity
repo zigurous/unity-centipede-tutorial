@@ -485,7 +485,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 588437759}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 22, z: 0}
+  m_LocalPosition: {x: 0, y: 21, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -916,7 +916,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1365776205}
   - component: {fileID: 1365776206}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Centipede
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -955,7 +955,7 @@ MonoBehaviour:
   bodySprite: {fileID: 21300000, guid: 781a902076fe52345aabf10f4d9ff0d4, type: 3}
   collisionMask:
     serializedVersion: 2
-    m_Bits: 897
+    m_Bits: 896
   homeArea: {fileID: 1926930956}
   speed: 20
   size: 12
@@ -1085,7 +1085,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1926930957}
   - component: {fileID: 1926930956}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Home
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1143,7 +1143,7 @@ GameObject:
   - component: {fileID: 2064053027}
   - component: {fileID: 2064053028}
   - component: {fileID: 2064053029}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Field
   m_TagString: Untagged
   m_Icon: {fileID: 0}
