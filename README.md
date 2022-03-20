@@ -6,4 +6,4 @@
 - **Topics**: Shooting, Movement, Generation
 - **Version**: 2020.3 LTS
 - [**Download**](https://github.com/zigurous/unity-centipede-tutorial/archive/refs/heads/main.zip)
-- [**Watch Video**](https://www.youtube.com/c/zigurous)
+- [**Watch Video**](https://youtu.be/QvdEBjqw0a8)
