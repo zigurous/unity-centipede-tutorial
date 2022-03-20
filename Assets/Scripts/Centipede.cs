@@ -58,6 +58,7 @@ public class Centipede : MonoBehaviour
         {
             Vector2 position = GridPosition(transform.position) + (Vector2.left * i);
             CentipedeSegment segment = Instantiate(segmentPrefab, position, Quaternion.identity);
+            segment.spriteRenderer.sprite = i == 0 ? headSprite : bodySprite;
             segment.centipede = this;
             segments.Add(segment);
         }

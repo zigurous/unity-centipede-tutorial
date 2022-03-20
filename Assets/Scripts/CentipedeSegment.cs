@@ -2,8 +2,7 @@ using UnityEngine;
 
 public class CentipedeSegment : MonoBehaviour
 {
-    private SpriteRenderer spriteRenderer;
-
+    public SpriteRenderer spriteRenderer { get; private set; }
     public Centipede centipede { get; set; }
     public CentipedeSegment ahead { get; set; }
     public CentipedeSegment behind { get; set; }
