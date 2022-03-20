@@ -88,7 +88,7 @@ public class GameManager : MonoBehaviour
 
     public void NextLevel()
     {
-        centipede.speed *= 1.05f;
+        centipede.speed *= 1.1f;
         centipede.Respawn();
     }
 
