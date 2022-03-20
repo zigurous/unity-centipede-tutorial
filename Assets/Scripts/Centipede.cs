@@ -28,17 +28,19 @@ public class Centipede : MonoBehaviour
         int points = segment.isHead ? pointsHead : pointsBody;
         GameManager.Instance.IncreaseScore(points);
 
-        segments.Remove(segment);
+        Instantiate(mushroomPrefab, GridPosition(segment.transform.position), Quaternion.identity);
 
         if (segment.ahead != null) {
             segment.ahead.behind = null;
         }
 
-        if (segment.behind != null) {
+        if (segment.behind != null)
+        {
             segment.behind.ahead = null;
+            segment.behind.UpdateHeadSegment();
         }
 
-        Instantiate(mushroomPrefab, GridPosition(segment.transform.position), Quaternion.identity);
+        segments.Remove(segment);
         Destroy(segment.gameObject);
 
         if (segments.Count == 0) {

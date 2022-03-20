@@ -38,7 +38,7 @@ public class CentipedeSegment : MonoBehaviour
         spriteRenderer.sprite = isHead ? centipede.headSprite : centipede.bodySprite;
     }
 
-    private void UpdateHeadSegment()
+    public void UpdateHeadSegment()
     {
         Vector2 gridPosition = GridPosition(transform.position);
 
