@@ -16,7 +16,7 @@ public class Centipede : MonoBehaviour
     [Header("Movement")]
     public LayerMask collisionMask = ~0;
     public Collider2D homeArea;
-    public float speed = 1f;
+    public float speed = 20f;
     public int size = 12;
 
     [Header("Scoring")]
