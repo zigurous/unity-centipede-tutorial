@@ -13,15 +13,16 @@ public class GameManager : MonoBehaviour
     public Text scoreText;
     public Text livesText;
 
-    private int score;
-    private int lives;
+    public int score { get; private set; }
+    public int lives { get; private set; }
 
     private void Awake()
     {
-        if (Instance == null) {
-            Instance = this;
+        if (Instance != null) {
+            DestroyImmediate(gameObject);
         } else {
-            Destroy(gameObject);
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
     }
 
@@ -100,7 +101,7 @@ public class GameManager : MonoBehaviour
 
     private void SetLives(int value)
     {
-        lives = value;
+        lives = Mathf.Max(value, 0);
         livesText.text = lives.ToString();
     }
 

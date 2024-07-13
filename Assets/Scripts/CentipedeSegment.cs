@@ -3,6 +3,8 @@ using UnityEngine;
 public class CentipedeSegment : MonoBehaviour
 {
     public SpriteRenderer spriteRenderer { get; private set; }
+    public BoxCollider2D boxCollider { get; private set; }
+
     public Centipede centipede { get; set; }
     public CentipedeSegment ahead { get; set; }
     public CentipedeSegment behind { get; set; }
@@ -14,7 +16,18 @@ public class CentipedeSegment : MonoBehaviour
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        boxCollider = GetComponent<BoxCollider2D>();
         targetPosition = transform.position;
+    }
+
+    private void OnEnable()
+    {
+        boxCollider.enabled = true;
+    }
+
+    private void OnDisable()
+    {
+        boxCollider.enabled = false;
     }
 
     private void Update()
@@ -94,7 +107,9 @@ public class CentipedeSegment : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Player")) {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Player") && centipede.enabled)
+        {
+            centipede.enabled = false;
             GameManager.Instance.ResetRound();
         }
 

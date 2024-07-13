@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Centipede : MonoBehaviour
 {
-    private List<CentipedeSegment> segments = new List<CentipedeSegment>();
+    private readonly List<CentipedeSegment> segments = new List<CentipedeSegment>();
 
     [Header("Prefabs")]
     public CentipedeSegment segmentPrefab;
@@ -23,12 +23,27 @@ public class Centipede : MonoBehaviour
     public int pointsHead = 100;
     public int pointsBody = 10;
 
+    private void OnEnable()
+    {
+        foreach (CentipedeSegment segment in segments) {
+            segment.enabled = true;
+        }
+    }
+
+    private void OnDisable()
+    {
+        foreach (CentipedeSegment segment in segments) {
+            segment.enabled = true;
+        }
+    }
+
     public void Remove(CentipedeSegment segment)
     {
         int points = segment.isHead ? pointsHead : pointsBody;
         GameManager.Instance.IncreaseScore(points);
 
-        Instantiate(mushroomPrefab, GridPosition(segment.transform.position), Quaternion.identity);
+        Vector2 position = GridPosition(segment.transform.position);
+        Instantiate(mushroomPrefab, position, Quaternion.identity);
 
         if (segment.ahead != null) {
             segment.ahead.behind = null;
@@ -62,6 +77,7 @@ public class Centipede : MonoBehaviour
             CentipedeSegment segment = Instantiate(segmentPrefab, position, Quaternion.identity, transform);
             segment.spriteRenderer.sprite = i == 0 ? headSprite : bodySprite;
             segment.centipede = this;
+            segment.enabled = enabled;
             segments.Add(segment);
         }
 
@@ -71,6 +87,8 @@ public class Centipede : MonoBehaviour
             segment.ahead = GetSegmentAt(i-1);
             segment.behind = GetSegmentAt(i+1);
         }
+
+        enabled = true;
     }
 
     private CentipedeSegment GetSegmentAt(int index)

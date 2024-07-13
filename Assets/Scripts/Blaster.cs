@@ -22,7 +22,7 @@ public class Blaster : MonoBehaviour
     private void FixedUpdate()
     {
         Vector2 position = rigidbody.position;
-        position += direction.normalized * speed * Time.fixedDeltaTime;
+        position += speed * Time.fixedDeltaTime * direction.normalized;
         rigidbody.MovePosition(position);
     }
 

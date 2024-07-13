@@ -30,12 +30,11 @@ public class Dart : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!rigidbody.isKinematic)
-        {
-            Vector2 position = rigidbody.position;
-            position += Vector2.up * speed * Time.fixedDeltaTime;
-            rigidbody.MovePosition(position);
-        }
+        if (rigidbody.isKinematic) return;
+
+        Vector2 position = rigidbody.position;
+        position += speed * Time.fixedDeltaTime * Vector2.up;
+        rigidbody.MovePosition(position);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
