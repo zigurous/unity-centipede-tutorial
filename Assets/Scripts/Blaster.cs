@@ -2,14 +2,14 @@ using UnityEngine;
 
 public class Blaster : MonoBehaviour
 {
-    private new Rigidbody2D rigidbody;
+    private Rigidbody2D rb;
     private Vector2 direction;
     private Vector2 spawnPosition;
     public float speed = 20f;
 
     private void Awake()
     {
-        rigidbody = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>();
         spawnPosition = transform.position;
     }
 
@@ -21,9 +21,9 @@ public class Blaster : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Vector2 position = rigidbody.position;
+        Vector2 position = rb.position;
         position += speed * Time.fixedDeltaTime * direction.normalized;
-        rigidbody.MovePosition(position);
+        rb.MovePosition(position);
     }
 
     public void Respawn()
